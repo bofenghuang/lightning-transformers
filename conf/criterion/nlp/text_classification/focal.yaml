@@ -1,0 +1,7 @@
+# @package criterion
+defaults:
+  - nlp/text_classification/default
+type: "focal"
+weight: null
+gamma: 2.0
+reduction: "mean"

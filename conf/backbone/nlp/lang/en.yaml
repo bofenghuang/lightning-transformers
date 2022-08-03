@@ -1,0 +1,4 @@
+# @package backbone
+defaults:
+  - nlp/default
+pretrained_model_name_or_path: roberta-base

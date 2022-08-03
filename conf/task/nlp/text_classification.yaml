@@ -1,6 +1,10 @@
 # @package task
 defaults:
   - nlp/default
+  - /criterion@_group_: nlp/text_classification/default
   - override /dataset@_group_: nlp/text_classification/default
-_target_: lightning_transformers.task.nlp..text_classification.TextClassificationTransformer
-downstream_model_type: transformers.AutoModelForSequenceClassification
+_target_: lightning_transformers.task.nlp.text_classification.TextClassificationTransformer
+criterion: ${criterion}
+cfg:
+  downstream_model_type: transformers.AutoModelForSequenceClassification
+  problem_type: ${dataset.cfg.problem_type}

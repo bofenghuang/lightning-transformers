@@ -1,0 +1,38 @@
+AXA - 5 epochs
+w/o pin_mem: 196.38s
+w pin_mem: no diff
+num_workers - 0 : 171.32s
+num_workers - 1 : 190s
+num_workers - 4 : 191.86s
+num_workers - 8 : 204.27s (4 * #GPUs)
+num_workers - 15 : 220.12s (by script)
+num_workers - 40 : 266.93s (#logical CPUs)
+num_workers - 40 : 212.55s (#physical CPUs)
+
+
+v100
+AXA - 5 epochs
+
+None (DDPSpawnStrategy?)
+#GPUs - 1 : 90.20s
+#GPUs - 2 : 67.77s
+#GPUs - 3 : 56.02s
+#GPUs - 4 : 52.10s
+
+#GPUs - 1 + deepspeed : 150.16s
+#GPUs - 2 + deepspeed : 85.28s
+#GPUs - 3 + deepspeed : 61.77s
+#GPUs - 4 + deepspeed : 51.72s
+
+#GPUs - 1 + num_workers - 1 : 81.23s
+#GPUs - 1 + num_workers - 4 : 82.51s
+#GPUs - 1 + num_workers - 8 : 83.23s
+
+#GPUs - 2 + ddp : 71.91s
+#GPUs - 3 + ddp : 61.73s
+#GPUs - 4 + ddp : 56.33s
+
+#GPUs - 1 + deepspeed + fp16 : 117.61s
+
+#GPUs - 1 + num_workers - 8 + fp16 native : 88.37s
+#GPUs - 1 + num_workers - 8 + fp16 apex : 94.50s

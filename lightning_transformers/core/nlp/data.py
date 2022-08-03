@@ -1,3 +1,5 @@
+# Copyright 2021 Zaion Lab (authors: Bofeng Huang)
+
 import os
 from typing import Any, Dict, Optional, Union
 
@@ -18,6 +20,7 @@ class HFDataModule(TokenizerDataModule):
         cfg: Contains data specific parameters when processing/loading the dataset (Default ``HFTransformerDataConfig``)
     """
 
+    # ? usage
     cfg: HFTransformerDataConfig
     tokenizer: PreTrainedTokenizerBase
 
@@ -27,10 +30,20 @@ class HFDataModule(TokenizerDataModule):
         super().__init__(tokenizer, cfg=cfg)
         os.environ["TOKENIZERS_PARALLELISM"] = "TRUE"  # todo: smarter handling of this env variable
 
-    def setup(self, stage: Optional[str] = None):
-        dataset = self.load_dataset()
+    def setup(self, data: Optional[Dict] = None, stage: Optional[str] = None):
+        """Dataset setup pipeline.
+        """
+
+        # print(stage)
+        # print("#"*200)
+        # # ? stage
+        # if stage != "fit":
+        #     return
+
+        dataset = self.load_dataset(data)
         dataset = self.split_dataset(dataset)
         dataset = self.process_data(dataset, stage=stage)
+
         self.ds = dataset
 
     def process_data(
@@ -38,7 +51,9 @@ class HFDataModule(TokenizerDataModule):
     ) -> Union[Dataset, DatasetDict]:
         return dataset
 
-    def load_dataset(self) -> Dataset:
+    def load_dataset(self, data: Optional[Dict] = None) -> Dataset:
+        """Load into HF Dataset object from Dict / local files / HF dataset name
+        """
         # Allow custom data files when loading the dataset
         data_files = {}
         if self.cfg.train_file is not None:
@@ -48,8 +63,12 @@ class HFDataModule(TokenizerDataModule):
         if self.cfg.test_file is not None:
             data_files["test"] = self.cfg.test_file
 
-        data_files = data_files if data_files else None
-        if self.cfg.dataset_name is not None:
+        if data is not None:
+            dataset = Dataset.from_dict(data)
+        elif data_files:
+            extension = self.cfg.train_file.split(".")[-1]
+            dataset = load_dataset(extension, data_files=data_files)
+        elif self.cfg.dataset_name is not None:
             # Download and load the Huggingface dataset.
             dataset = load_dataset(
                 path=self.cfg.dataset_name,
@@ -57,12 +76,6 @@ class HFDataModule(TokenizerDataModule):
                 cache_dir=self.cfg.cache_dir,
                 data_files=data_files,
             )
-
-        # Load straight from data files
-        elif self.cfg.datafiles:
-            extension = self.cfg.train_file.split(".")[-1]
-            dataset = load_dataset(extension, data_files=data_files)
-
         else:
             raise MisconfigurationException(
                 "You have not specified a dataset name nor a custom train and validation file"

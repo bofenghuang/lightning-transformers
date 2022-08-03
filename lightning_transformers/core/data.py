@@ -28,31 +28,40 @@ class TransformerDataModule(pl.LightningDataModule):
     def train_dataloader(self) -> DataLoader:
         return DataLoader(
             self.ds["train"],
-            batch_size=self.batch_size,
+            batch_size=self.train_batch_size,
             num_workers=self.cfg.num_workers,
             collate_fn=self.collate_fn,
+            pin_memory=self.cfg.pin_memory,
+            shuffle=True,
         )
 
-    def val_dataloader(self) -> DataLoader:
-        return DataLoader(
-            self.ds["validation"],
-            batch_size=self.batch_size,
-            num_workers=self.cfg.num_workers,
-            collate_fn=self.collate_fn,
-        )
+    def val_dataloader(self) -> Optional[DataLoader]:
+        if "validation" in self.ds:
+            return DataLoader(
+                self.ds["validation"],
+                batch_size=self.eval_batch_size,
+                num_workers=self.cfg.num_workers,
+                collate_fn=self.collate_fn,
+                pin_memory=self.cfg.pin_memory,
+            )
 
     def test_dataloader(self) -> Optional[DataLoader]:
         if "test" in self.ds:
             return DataLoader(
                 self.ds["test"],
-                batch_size=self.batch_size,
+                batch_size=self.eval_batch_size,
                 num_workers=self.cfg.num_workers,
                 collate_fn=self.collate_fn,
+                pin_memory=self.cfg.pin_memory,
             )
 
     @property
-    def batch_size(self) -> int:
-        return self.cfg.batch_size
+    def train_batch_size(self) -> int:
+        return self.cfg.train_batch_size
+
+    @property
+    def eval_batch_size(self) -> int:
+        return self.cfg.eval_batch_size
 
     @property
     def collate_fn(self) -> Optional[Callable]:
@@ -69,6 +78,8 @@ class TransformerDataModule(pl.LightningDataModule):
 
 
 class TokenizerDataModule(TransformerDataModule):
-    def __init__(self, tokenizer: Any, cfg: TransformerDataConfig = TransformerDataConfig()) -> None:
+    def __init__(
+        self, tokenizer: Any, cfg: TransformerDataConfig = TransformerDataConfig()
+    ) -> None:
         super().__init__(cfg=cfg)
         self.tokenizer = tokenizer

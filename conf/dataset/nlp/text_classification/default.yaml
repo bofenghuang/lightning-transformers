@@ -1,4 +1,10 @@
 # @package dataset
 defaults:
   - nlp/default
+  - /preprocessor@_group_: nlp/text_classification/default
 _target_: lightning_transformers.task.nlp.text_classification.TextClassificationDataModule
+cfg:
+  # label
+  problem_type: "single_label_classification"
+  multi_label_sep: null
+  labels_to_exclude: null

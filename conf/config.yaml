@@ -1,10 +1,13 @@
 defaults: # loads default configs
-  - task: default
+  # - task: default
+  - task: nlp/text_classification
   - optimizer: adamw
   - scheduler: linear_schedule_with_warmup
   - training: default
   - trainer: default
 
 experiment_name: ${now:%Y-%m-%d}_${now:%H-%M-%S}
+# todo
 log: False
+# log: True
 ignore_warnings: True # todo: check warnings before release

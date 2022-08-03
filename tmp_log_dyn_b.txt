@@ -1,0 +1,20 @@
+# axa
+max_seq_len has been set to 36
+Random Sampling: ratio of true samples 0.3861, ratio of padding 0.6139, #batches 164, Total time 0.5123s
+Dynamic Batching w/ fixed lognorm: ratio of true samples 0.4170, ratio of padding 0.5830, #batches 375, Total time 0.5104s, Sampler initialization time 0.4174s
+Dynamic Batching w/ fit lognorm: ratio of true samples 0.8283, ratio of padding 0.1717, #batches 108, Total time 0.4246s, Sampler initialization time 0.6296s
+Dynamic Batching w/ Kmeans: ratio of true samples 0.8862, ratio of padding 0.1138, #batches 79, Total time 0.4611s, Sampler initialization time 1.1326s
+
+# lfm v1
+max_seq_len has been set to 41
+Random Sampling: ratio of true samples 0.2791, ratio of padding 0.7209, #batches 50, Total time 0.1557s
+Dynamic Batching w/ fixed lognorm: ratio of true samples 0.3463, ratio of padding 0.6537, #batches 106, Total time 0.1342s, Sampler initialization time 0.1102s
+Dynamic Batching w/ fit lognorm: ratio of true samples 0.7576, ratio of padding 0.2424, #batches 28, Total time 0.1389s, Sampler initialization time 0.2866s
+Dynamic Batching w/ Kmeans: ratio of true samples 0.8671, ratio of padding 0.1329, #batches 21, Total time 0.1301s, Sampler initialization time 0.6833s
+
+# ag2r
+max_seq_len has been set to 31
+Random Sampling: ratio of true samples 0.3855, ratio of padding 0.6145, #batches 153, Total time 0.4213s
+Dynamic Batching w/ fixed lognorm: ratio of true samples 0.4509, ratio of padding 0.5491, #batches 351, Total time 0.4485s, Sampler initialization time 0.3267s
+Dynamic Batching w/ fit lognorm: ratio of true samples 0.8275, ratio of padding 0.1725, #batches 124, Total time 0.4048s, Sampler initialization time 0.6513s
+Dynamic Batching w/ Kmeans: ratio of true samples 0.8785, ratio of padding 0.1215, #batches 75, Total time 0.3984s, Sampler initialization time 1.1816s

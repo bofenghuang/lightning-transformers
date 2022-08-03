@@ -16,8 +16,10 @@ from dataclasses import dataclass
 
 @dataclass
 class TransformerDataConfig:
-    batch_size: int = 32
+    train_batch_size: int = 32
+    eval_batch_size: int = 64
     num_workers: int = 0
+    pin_memory: bool = True
 
 
 @dataclass

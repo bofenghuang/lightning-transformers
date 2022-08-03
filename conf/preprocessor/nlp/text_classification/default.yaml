@@ -1,0 +1,22 @@
+# @package preprocessor
+_target_: lightning_transformers.task.nlp.text_classification.TextClassificationPreprocessDataModule
+cfg:
+  input_field: "input"
+  label_field: "label"
+  # train
+  train_do_norm_inputs: True
+  train_do_norm_labels: True
+  train_do_clean_duplicates: True
+  train_min_examples_per_class: null
+  # val, test
+  eval_do_norm_inputs: False
+  eval_do_norm_labels: False
+  eval_do_clean_duplicates: False
+  # label process
+  # problem_type: ${training.problem_type}
+  # multi_label_sep: "+"
+  # labels_to_exclude: 
+  #   "irrelevant"
+  # process args
+  preprocessing_batch_size: ${training.preprocessing_batch_size}
+  preprocessing_num_workers: ${training.preprocessing_num_workers}

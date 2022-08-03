@@ -1,0 +1,44 @@
+# todo
+- add model predownload utils / warm up
+- mlflow logger, hydra job logger
+- add seed_everything() if not None
+- initialize losses by _target, recursive
+- callbacks
+
+turing and tensor cores help apex ??
+
+lightning_transformers
+- Packaging of PL
+- Intergrating transformers, datasets, hydra
+- Multi-tasks (nlp+)
+
+
+- Configuration *(Hydra, omegaConf, dataclasses)*
+  - Hierarchical parameterization
+  - CLI, argument overriding
+- DataModule *(pl.LightningDataModule, re, sklearn, datasets, tokenizers)*
+  - Load datasets from *.csv, *.json, memory or public HF datasets
+  - Split train, val and test
+  - Preprocess (num_procs, bs)
+    - Normalize text, check duplicates, delete minor classes
+    - Tokenization, set "max_length"
+    - Encode labels; Split, exclude, binarize labels (multi-label classification)
+    - set_format
+  - Dataloader
+- Backbone *(torch.nn.Module, transformers)*
+  - Define layers, forward
+- System *(pl.LightningModule)
+  - Losses (multi-label classification)
+  - Optimizers, schedulers
+  - Metrics (multi-label classification)
+  - Train, eval logic
+  - Postprocessing
+    - Temperature scaling
+    - Pruning, quantization
+    - Export: onnx, tensorrt
+Trainer *(pl.Trainer)*
+  - Multi GPUs, multi nodes
+  - Mixed precision
+  - Callbacks: logger, checkpointer, earlystopper
+
+

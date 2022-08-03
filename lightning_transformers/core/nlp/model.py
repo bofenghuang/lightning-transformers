@@ -45,6 +45,8 @@ class HFTransformer(TaskTransformer):
         pipeline_kwargs: Optional[dict] = None,
         **model_data_kwargs,
     ) -> None:
+        # save hyper params
+        # init model
         self.save_hyperparameters()
         model_cls: Type["AutoModel"] = get_class(downstream_model_type)
         model = model_cls.from_pretrained(backbone.pretrained_model_name_or_path, **model_data_kwargs)

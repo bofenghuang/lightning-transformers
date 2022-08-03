@@ -73,31 +73,105 @@ class HydraInstantiator(Instantiator):
 
     def optimizer(self, model: torch.nn.Module, cfg: DictConfig) -> torch.optim.Optimizer:
         no_decay = ["bias", "LayerNorm.weight"]
-        grouped_parameters = [
-            {
-                "params": [
-                    p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay) and p.requires_grad
-                ],
-                "weight_decay": cfg.weight_decay,
-            },
-            {
-                "params": [
-                    p for n, p in model.named_parameters() if any(nd in n for nd in no_decay) and p.requires_grad
-                ],
-                "weight_decay": 0.0,
-            },
-        ]
+
+        # grouped_parameters = [
+        #     {
+        #         "params": [
+        #             p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay) and p.requires_grad
+        #         ],
+        #         "weight_decay": cfg.weight_decay,
+        #     },
+        #     {
+        #         "params": [
+        #             p for n, p in model.named_parameters() if any(nd in n for nd in no_decay) and p.requires_grad
+        #         ],
+        #         "weight_decay": 0.0,
+        #     },
+        # ]
+
+        # todo: move this outside of hydra
+        if cfg.layer_lr_decay is None:
+            grouped_parameters = [
+                {
+                    "params": [
+                        p
+                        for n, p in model.named_parameters()
+                        if not any(nd in n for nd in no_decay) and p.requires_grad
+                    ],
+                    "weight_decay": cfg.weight_decay,
+                },
+                {
+                    "params": [
+                        p for n, p in model.named_parameters() if any(nd in n for nd in no_decay) and p.requires_grad
+                    ],
+                    "weight_decay": 0.0,
+                },
+            ]
+        else:
+            # todo: add support for other models
+            # 12 transformer layers in BERT
+            groups = [(f"layer.{i}.", cfg.lr * pow(cfg.layer_lr_decay, 11 - i)) for i in range(12)]
+
+            decay_optimizer_parameters = []
+            no_decay_optimizer_parameters = []
+            for g, l in groups:
+                decay_optimizer_parameters.append(
+                    {
+                        "params": [
+                            p
+                            for n, p in model.named_parameters()
+                            if not any(nd in n for nd in no_decay) and p.requires_grad and any(nd in n for nd in [g])
+                        ],
+                        "weight_decay": cfg.weight_decay,
+                        "lr": l,
+                    }
+                )
+                no_decay_optimizer_parameters.append(
+                    {
+                        "params": [
+                            p
+                            for n, p in model.named_parameters()
+                            if any(nd in n for nd in no_decay) and p.requires_grad and any(nd in n for nd in [g])
+                        ],
+                        "weight_decay": 0.0,
+                        "lr": l,
+                    }
+                )
+            # other params
+            group_all_parameters = [
+                {
+                    "params": [
+                        p
+                        for n, p in model.named_parameters()
+                        if not any(nd in n for nd in no_decay) and p.requires_grad and not any(nd in n for nd, _ in groups)
+                    ],
+                    "weight_decay": cfg.weight_decay,
+                },
+                {
+                    "params": [
+                        p
+                        for n, p in model.named_parameters()
+                        if any(nd in n for nd in no_decay) and p.requires_grad and not any(nd in n for nd, _ in groups)
+                    ],
+                    "weight_decay": 0.0,
+                },
+            ]
+
+            grouped_parameters = decay_optimizer_parameters + no_decay_optimizer_parameters + group_all_parameters
+
+        # todo: more elegant
+        cfg.pop("layer_lr_decay")
+
         return self.instantiate(cfg, grouped_parameters)
 
     def scheduler(self, cfg: DictConfig, optimizer: torch.optim.Optimizer) -> torch.optim.lr_scheduler._LRScheduler:
         return self.instantiate(cfg, optimizer=optimizer)
 
     def data_module(
-        self,
-        cfg: DictConfig,
-        tokenizer: Optional[DictConfig] = None,
+        self, cfg: DictConfig, tokenizer: Optional[DictConfig] = None,
     ) -> Union[TransformerDataModule, TokenizerDataModule]:
         if tokenizer:
+            # instantiate tokenizer first
             return self.instantiate(cfg, tokenizer=self.instantiate(tokenizer))
         return self.instantiate(cfg)
 

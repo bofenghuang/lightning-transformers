@@ -2,5 +2,8 @@
 _target_: lightning_transformers.core.data.TransformerDataModule
 cfg:
   # torch data-loader specific arguments
-  batch_size: ${training.batch_size}
+  # todo: why put in training
+  train_batch_size: ${training.train_batch_size}
+  eval_batch_size: ${training.eval_batch_size}
   num_workers: ${training.num_workers}
+  pin_memory: ${training.pin_memory}

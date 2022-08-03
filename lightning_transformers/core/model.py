@@ -60,6 +60,7 @@ class LitTransformer(pl.LightningModule):
         else:
             dataset_size = len(self.trainer.datamodule.train_dataloader())
 
+        # todo : num_processes deprecated
         num_devices = max(1, self.trainer.num_gpus, self.trainer.num_processes)
         if self.trainer.tpu_cores:
             num_devices = max(num_devices, self.trainer.tpu_cores)

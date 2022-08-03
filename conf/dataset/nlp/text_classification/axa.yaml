@@ -1,0 +1,17 @@
+# @package dataset
+defaults:
+  - nlp/default
+  - /preprocessor@_group_: nlp/text_classification/default
+_target_: lightning_transformers.task.nlp.text_classification.TextClassificationDataModule
+cfg:
+  # label
+  problem_type: "multi_label_classification"
+  multi_label_sep: "+"
+  labels_to_exclude: 
+    "irrelevant"
+  # dataset
+  train_file: /rd_storage/bhuang/corpus/text/intent/internal/axa/train.csv
+  # validation_file: /rd_storage/bhuang/corpus/text/intent/internal/axa/val.csv
+  # test_file: /rd_storage/bhuang/corpus/text/intent/internal/axa/test.csv
+
+  max_length: 32
