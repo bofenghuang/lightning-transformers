@@ -1,4 +1,4 @@
-# Copyright 2022 Zaion Lab (authors: Bofeng Huang)
+# Copyright 2022 ***** Lab (authors: Bofeng Huang)
 
 from dataclasses import dataclass
 from typing import List, Optional, Union

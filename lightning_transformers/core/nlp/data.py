@@ -1,4 +1,4 @@
-# Copyright 2021 Zaion Lab (authors: Bofeng Huang)
+# Copyright 2021 ***** Lab (authors: Bofeng Huang)
 
 import os
 from typing import Any, Dict, Optional, Union

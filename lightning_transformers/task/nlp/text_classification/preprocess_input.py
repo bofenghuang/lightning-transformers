@@ -1,4 +1,4 @@
-# Copyright 2022 Zaion Lab (authors: Bofeng Huang)
+# Copyright 2022 ***** Lab (authors: Bofeng Huang)
 # coding=utf-8
 
 import csv
